@@ -1,0 +1,11 @@
+.env
+node_modules
+
+# Ignore files
+*.log
+*.db
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite-journal
+package-lock.json
