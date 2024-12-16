@@ -11,3 +11,15 @@ export const editProfile = asyncHandler(async (req, res, next) => {
     throw new AppError("User not found");
   }
 });
+
+export const getUserProfile = asyncHandler(async (req, res, next) => {
+  const user = req.user;
+  console.log("user", user);
+  if (req.user) {
+    res.status(200).json({
+      user,
+    });
+  } else {
+    throw new AppError("You are not authenticated", 401);
+  }
+});

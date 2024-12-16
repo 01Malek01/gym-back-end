@@ -45,7 +45,10 @@ export const signup = asyncHandler(async (req, res, next) => {
 export const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    res.status(400);
+    res.status(400).json({
+      status: "fail",
+      message: " Either email or password is incorrect ",
+    });
     throw new AppError("Please add all fields");
   }
   const user = await User.findOne({ email });
@@ -73,33 +76,40 @@ export const login = asyncHandler(async (req, res, next) => {
     user: {
       _id: user._id,
       email: user.email,
+      role: user.role,
     },
   });
 });
 
 export const logout = asyncHandler(async (req, res, next) => {
-  res.clearCookie("jwt");
-  res.cookie("jwt", "loggedout", {
+  res.clearCookie("refreshToken");
+  res.cookie("refreshToken", "loggedout", {
     httpOnly: true,
     expires: new Date(0), // set to past date
   });
-  res.status(200).json({ status: "success" });
+  res
+    .status(200)
+    .json({ status: "success", message: "Logged out successfully" });
 });
 
 export const refreshToken = asyncHandler(async (req, res, next) => {
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
     res.status(401);
+    console.log("no refresh token");
     throw new AppError("Please login again");
   }
   const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
   if (!decoded) {
     res.status(401);
+    console.log(" invalid refresh token");
     throw new AppError("Please login again");
   }
   const user = await User.findById(decoded.id);
   if (!user) {
     res.status(401);
+    console.log(" user not found");
+    
     throw new AppError("Please login again");
   }
   const accessToken = await createJWT(user);
