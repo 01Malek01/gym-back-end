@@ -1,8 +1,11 @@
+import User from "../models/User.js";
+
 // Controllers for managing users
-export const getUser = async (req, res) => {
+export const getAllUsers = async (req, res) => {
   try {
     // Logic to fetch all users
-    res.status(200).json({ success: true, data: "Fetch all users" });
+    const users = await User.find().exec();
+    res.status(200).json({ success: true, users });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -11,7 +14,9 @@ export const getUser = async (req, res) => {
 export const createUser = async (req, res) => {
   try {
     // Logic to create a new user
-    res.status(201).json({ success: true, data: "User created" });
+    console.log(req.body)
+    const user = await User.create(req.body);
+    res.status(201).json({ success: true, user });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -20,8 +25,12 @@ export const createUser = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     // Logic to update a user by ID
-    const { id } = req.params;
-    res.status(200).json({ success: true, data: `User with ID ${id} updated` });
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    }).exec();
+    res
+      .status(200)
+      .json({ success: true, data: `User with ID ${req.params.id} updated` });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -31,6 +40,7 @@ export const deleteUser = async (req, res) => {
   try {
     // Logic to delete a user by ID
     const { id } = req.params;
+    await User.findByIdAndDelete(id).exec();
     res.status(200).json({ success: true, data: `User with ID ${id} deleted` });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

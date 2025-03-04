@@ -5,6 +5,7 @@ const SupplementSchema = new mongoose.Schema({
   description: String, // short description of the product
   price: Number, // e.g., 20 (for $20)
   stock: Number, // e.g., number of items in stock
+  image: String,
   createdAt: { type: Date, default: Date.now },
 });
 

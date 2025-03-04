@@ -14,6 +14,7 @@ import orderRoutes from "./routes/Order.js";
 import supplementRoutes from "./routes/Supplement.js";
 import offerRoutes from "./routes/Offer.js";
 import adminRoutes from "./routes/Admin.js";
+import paymentRoutes from "./routes/Payment.js";
 const app = express();
 dotenv.config({ path: "./.env" });
 //security middlewares
@@ -50,6 +51,7 @@ app.use("/api/v1/order", orderRoutes);
 app.use("/api/v1/supplement", supplementRoutes);
 app.use("/api/v1/offer", offerRoutes);
 app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/buy", paymentRoutes);
 
 //global error handler
 app.use(globalErrorHandler);

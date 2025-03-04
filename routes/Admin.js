@@ -2,7 +2,6 @@ import express from "express";
 import protect from "../middlewares/Protect.js";
 import restrictTo from "../middlewares/RestrictTo.js";
 import {
-  getUser,
   createUser,
   updateUser,
   deleteUser,
@@ -22,13 +21,14 @@ import {
   createTrainer,
   updateTrainer,
   deleteTrainer,
+  getAllUsers,
 } from "../controllers/Admin.js";
 const router = express.Router();
 
 router.use(protect);
 router.use(restrictTo("admin"));
 //manage users
-router.get("/user", getUser);
+router.get("/user/all-users", getAllUsers);
 router.post("/user", createUser);
 router.put("/user/:id", updateUser);
 router.delete("/user/:id", deleteUser);
