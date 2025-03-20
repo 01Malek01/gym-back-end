@@ -13,9 +13,9 @@ export const editProfile = asyncHandler(async (req, res, next) => {
 });
 
 export const getUserProfile = asyncHandler(async (req, res, next) => {
-  const user = req.user;
-  console.log("user", user);
-  if (req.user) {
+  const user = await User.findById(req.user._id).populate("membershipType");
+  if (user) {
+    console.log("User", user);
     res.status(200).json({
       user,
     });

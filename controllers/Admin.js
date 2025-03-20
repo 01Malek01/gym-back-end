@@ -1,3 +1,4 @@
+import Supplement from "../models/Supplement.js";
 import User from "../models/User.js";
 
 // Controllers for managing users
@@ -14,7 +15,7 @@ export const getAllUsers = async (req, res) => {
 export const createUser = async (req, res) => {
   try {
     // Logic to create a new user
-    console.log(req.body)
+    console.log(req.body);
     const user = await User.create(req.body);
     res.status(201).json({ success: true, user });
   } catch (error) {
@@ -48,9 +49,10 @@ export const deleteUser = async (req, res) => {
 };
 
 // Controllers for managing supplements
-export const getSupplement = async (req, res) => {
+export const getSupplements = async (req, res) => {
   try {
-    res.status(200).json({ success: true, data: "Fetch all supplements" });
+    const supplements = await Supplement.find().exec();
+    res.status(200).send(supplements);
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -58,7 +60,9 @@ export const getSupplement = async (req, res) => {
 
 export const createSupplement = async (req, res) => {
   try {
-    res.status(201).json({ success: true, data: "Supplement created" });
+    const supplement = await Supplement.create(req.body);
+    console.log(" req body supplement ", req.body);
+    res.status(201).json({ success: true, supplement });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -78,6 +82,7 @@ export const updateSupplement = async (req, res) => {
 export const deleteSupplement = async (req, res) => {
   try {
     const { id } = req.params;
+    await Supplement.findByIdAndDelete(id).exec();
     res
       .status(200)
       .json({ success: true, data: `Supplement with ID ${id} deleted` });

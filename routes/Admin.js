@@ -5,7 +5,6 @@ import {
   createUser,
   updateUser,
   deleteUser,
-  getSupplement,
   createSupplement,
   updateSupplement,
   deleteSupplement,
@@ -22,6 +21,7 @@ import {
   updateTrainer,
   deleteTrainer,
   getAllUsers,
+  getSupplements,
 } from "../controllers/Admin.js";
 const router = express.Router();
 
@@ -34,7 +34,7 @@ router.put("/user/:id", updateUser);
 router.delete("/user/:id", deleteUser);
 
 //manage supplements
-router.get("/supplement", getSupplement);
+router.get("/supplement", getSupplements);
 router.post("/supplement", createSupplement);
 router.put("/supplement/:id", updateSupplement);
 router.delete("/supplement/:id", deleteSupplement);
