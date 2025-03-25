@@ -23,6 +23,7 @@ import {
   getAllUsers,
   getSupplements,
 } from "../controllers/Admin.js";
+import upload from "../config/multer.js";
 const router = express.Router();
 
 router.use(protect);
@@ -35,7 +36,7 @@ router.delete("/user/:id", deleteUser);
 
 //manage supplements
 router.get("/supplement", getSupplements);
-router.post("/supplement", createSupplement);
+router.post("/supplement", upload.single("image"), createSupplement);
 router.put("/supplement/:id", updateSupplement);
 router.delete("/supplement/:id", deleteSupplement);
 

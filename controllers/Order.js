@@ -1,7 +1,4 @@
-import dotenv from "dotenv";
 import expressAsyncHandler from "express-async-handler";
-import axios from "axios";
-import AppError from "../utils/AppError.js";
 import Order from "../models/Order.js";
 
 export const getAllOrders = expressAsyncHandler(async (req, res, next) => {

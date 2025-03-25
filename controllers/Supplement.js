@@ -2,24 +2,27 @@ import asyncHandler from "express-async-handler";
 import Supplement from "../models/Supplement.js";
 import AppError from "../utils/AppError.js";
 
-//create supplement
-export const createSupplement = asyncHandler(async (req, res, next) => {
-  const { name, description, price, stock } = req.body;
-  if (!name || !description || !price || !stock) {
-    res.status(400);
-    throw new AppError("Please add all fields");
-  }
-  const supplement = await Supplement.create({
-    name,
-    description,
-    price,
-    stock,
-  });
-  res.status(201).json({
-    status: "success",
-    supplement,
-  });
-});
+// //create supplement
+// export const createSupplement = asyncHandler(async (req, res, next) => {
+//   const { name, description, price, stock } = req.body;
+//   console.log("req image ", req.body.image);
+//   console.log("req file", req.file);
+//   if (!name || !description || !price || !stock) {
+//     res.status(400);
+//     throw new AppError("Please add all fields");
+//   }
+//   const supplement = await Supplement.create({
+//     name,
+//     description,
+//     price,
+//     stock,
+//     image: image || "noimage.jpg",
+//   });
+//   res.status(201).json({
+//     status: "success",
+//     supplement,
+//   });
+// });
 
 //get all supplements
 export const getAllSupplements = asyncHandler(async (req, res, next) => {
