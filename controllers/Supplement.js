@@ -49,26 +49,36 @@ export const deleteSupplement = asyncHandler(async (req, res, next) => {
 
 //update supplement
 export const updateSupplement = asyncHandler(async (req, res, next) => {
-  const supplementId = req.params.supplementId;
+  const supplementId = req.params.id;
   const supplement = await Supplement.findById(supplementId);
   if (!supplement) {
     res.status(400);
     throw new AppError("Supplement not found");
   }
-  const { name, description, price, stock } = req.body;
+  const { price, stock } = req.body;
 
   //check if any field is present
 
-  if (name) supplement.name = name;
-  if (description) supplement.description = description;
   if (price) supplement.price = price;
   if (stock) supplement.stock = stock;
-  if (!name && !description && !price && !stock) {
-    res.status(400);
-    throw new AppError("Please add at least one field");
+  if (!price && !stock) {
+    res.status(200);
   }
 
   await supplement.save();
+  res.status(200).json({
+    status: "success",
+    supplement,
+  });
+});
+
+export const getSupplement = asyncHandler(async (req, res, next) => {
+  const supplementId = req.params.id;
+  const supplement = await Supplement.findById(supplementId);
+  if (!supplement) {
+    res.status(400);
+    throw new AppError("Supplement not found");
+  }
   res.status(200).json({
     status: "success",
     supplement,

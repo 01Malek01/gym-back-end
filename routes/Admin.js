@@ -6,7 +6,6 @@ import {
   updateUser,
   deleteUser,
   createSupplement,
-  updateSupplement,
   deleteSupplement,
   getMembership,
   createMembership,
@@ -24,6 +23,7 @@ import {
   getSupplements,
 } from "../controllers/Admin.js";
 import upload from "../config/multer.js";
+import { updateSupplement } from "../controllers/Supplement.js";
 const router = express.Router();
 
 router.use(protect);
