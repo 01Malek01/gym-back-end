@@ -17,7 +17,6 @@ export const buyMembership = asyncHandler(async (req, res, next) => {
   }
 
   if (req.user.membershipStatus === "active") {
-    res.status(400).json({ error: "You are already a member" });
     throw new Error("You are already a member");
   }
   try {

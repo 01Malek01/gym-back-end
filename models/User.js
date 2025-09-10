@@ -58,7 +58,35 @@ const userSchema = new mongoose.Schema(
     },
     membershipExpirationDate: {
       type: Date,
+      index: true, // Add index for faster queries
     },
+    expiryNotificationSent: {
+      type: Boolean,
+      default: false,
+    },
+    lastMembershipNotification: {
+      type: Date,
+    },
+    membershipHistory: [{
+      startDate: {
+        type: Date,
+        required: true,
+      },
+      endDate: {
+        type: Date,
+        required: true,
+      },
+      membershipType: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Membership',
+        required: true,
+      },
+      status: {
+        type: String,
+        enum: ['active', 'expired', 'cancelled'],
+        default: 'active',
+      },
+    }],
   },
   { timestamps: true }
 );
