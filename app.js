@@ -17,6 +17,7 @@ import adminRoutes from "./routes/Admin.js";
 import paymentRoutes from "./routes/Payment.js";
 import settingsRoutes from "./routes/Settings.js";
 import notificationRoutes from "./routes/Notification.js";
+import trainingLogsRoutes from "./routes/TrainingLog.js";
 
 const app = express();
 dotenv.config({ path: "./.env" });
@@ -58,6 +59,7 @@ app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/buy", paymentRoutes);
 app.use("/api/v1/settings", settingsRoutes);
 app.use("/api/v1/notification", notificationRoutes);
+app.use("/api/v1/training-logs", trainingLogsRoutes);
 
 //global error handler
 app.use(globalErrorHandler);

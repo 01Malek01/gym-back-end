@@ -11,7 +11,7 @@ const initializeNotificationService = (io) => {
 /**
  * Check for memberships that will expire soon (within 5 days)
  */
-const checkExpiringMemberships = async () => {
+const checkExpiringMemberships = async (io) => {
   try {
     const fiveDaysFromNow = new Date();
     fiveDaysFromNow.setDate(fiveDaysFromNow.getDate() + 5);
@@ -35,7 +35,8 @@ const checkExpiringMemberships = async () => {
           member._id,
           `Your membership will expire in ${daysRemaining} day${
             daysRemaining === 1 ? "" : "s"
-          }.`
+          }.`,
+          io
         );
 
         // Mark as notified to prevent duplicate notifications
@@ -51,7 +52,7 @@ const checkExpiringMemberships = async () => {
 /**
  * Check for and handle expired memberships
  */
-const checkExpiredMemberships = async () => {
+const checkExpiredMemberships = async (io) => {
   try {
     const expiredMembers = await User.find({
       membershipExpirationDate: { $lte: new Date() },
@@ -63,7 +64,8 @@ const checkExpiredMemberships = async () => {
         // Send expiration notification
         await notificationService.sendNotification(
           member._id,
-          "Your membership has expired. Please renew to continue using our services."
+          "Your membership has expired. Please renew to continue using our services.",
+          io
         );
 
         // Update membership status to expired
@@ -85,14 +87,13 @@ const checkMembershipExpiry = (io) => {
   initializeNotificationService(io);
 
   // Initial check on startup
-  checkExpiringMemberships();
-  checkExpiredMemberships();
+  checkExpiringMemberships(io);
+  checkExpiredMemberships(io);
 
   // Schedule regular checks
-  // Check every hour (adjust as needed)
   cron.schedule("0 * * * *", async () => {
-    await checkExpiringMemberships();
-    await checkExpiredMemberships();
+    await checkExpiringMemberships(io);
+    await checkExpiredMemberships(io);
   });
 };
 

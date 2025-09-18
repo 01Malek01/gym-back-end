@@ -4,7 +4,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import handelSocketConnection from "./SocketEvents.js";
 import checkMembershipExpiry from "./cron/CheckMembershipExpiry.js";
-import NotificationService from "./services/NotificationService.js";
+import sendEncourageMessageCron from "./cron/SendEncourageMessage.js";
 //Each gym has it's own db for more scalability
 const connectToGymDB = (gymId) => {
   const uri = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster.mongodb.net/${gymId}`;
@@ -33,4 +33,5 @@ server.listen(process.env.PORT, async () => {
   console.log(`Server is running on port ${process.env.PORT}`);
   // Initialize membership expiry checks with the io instance
   checkMembershipExpiry(io);
+  sendEncourageMessageCron(io);
 });

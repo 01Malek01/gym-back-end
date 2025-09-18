@@ -15,6 +15,7 @@ class NotificationService {
    * @returns {Promise<Object>} The created notification
    */
   async sendNotification(userId, message, metadata = {}) {
+ 
     try {
       if (!userId) {
         throw new Error("User ID is required");

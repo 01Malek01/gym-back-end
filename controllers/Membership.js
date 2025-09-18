@@ -1,19 +1,9 @@
-import Membership from "../models/Membership.js";
 import asyncHandler from "express-async-handler";
 import AppError from "../utils/AppError.js";
-import User from "../models/User.js";
+import MembershipService from "../services/MembershipService.js";
 export const createMembership = asyncHandler(async (req, res, next) => {
-  const { type, price, durationInDays } = req.body;
-  if (!type || !price || !durationInDays) {
-    res.status(400);
-    throw new AppError("Please add all fields");
-  }
-  const membership = await Membership.create({
-    type,
-    price,
-    durationInDays,
-  });
-
+  const membershipService = new MembershipService(req.body, req, res);
+  const { membership } = await membershipService.createMembership();
   res.status(201).json({
     status: "success",
     membership,
@@ -21,38 +11,24 @@ export const createMembership = asyncHandler(async (req, res, next) => {
 });
 
 export const getAllMemberships = asyncHandler(async (req, res, next) => {
-  const memberships = await Membership.find();
+  const membershipService = new MembershipService(null, req, res);
+  const { memberships } = await membershipService.getAllMemberships();
   res.status(200).json({
     status: "success",
     memberships,
   });
 });
 export const deleteMembership = asyncHandler(async (req, res, next) => {
-  const { membershipId } = req.params;
-  const membership = await Membership.findById(membershipId);
-  if (!membership) {
-    res.status(400);
-    throw new AppError("Membership not found");
-  }
-  await membership.remove();
+  const membershipService = new MembershipService(null, req, res);
+  await membershipService.deleteMembership();
   res.status(200).json({
     status: "success",
   });
 });
 
 export const updateMembership = asyncHandler(async (req, res, next) => {
-  const { membershipId } = req.params;
-  const { type, price, durationInDays, expirationDate } = req.body;
-  const membership = await Membership.findById(membershipId);
-  if (!membership) {
-    res.status(400);
-    throw new AppError("Membership not found");
-  }
-  membership.type = type;
-  membership.price = price;
-  membership.durationInDays = durationInDays;
-  membership.expirationDate = expirationDate;
-  await membership.save();
+  const membershipService = new MembershipService(req.body, req, res);
+  const { membership } = await membershipService.updateMembership();
   res.status(200).json({
     status: "success",
     membership,
@@ -60,24 +36,10 @@ export const updateMembership = asyncHandler(async (req, res, next) => {
 });
 
 export const getActiveMemberships = asyncHandler(async (req, res, next) => {
-  const stats = User.aggregate([
-    {
-      $match: { membershipStatus: "active" },
-    },
-    {
-      $group: {
-        _id: "$membershipStatus",
-        count: { $sum: 1 },
-      },
-      activeMemberShips: {
-        $sum: 1,
-      },
-    },
-  ]);
+  const membershipService = new MembershipService(null, req, res);
+  const { stats } = await membershipService.getActiveMemberships();
   return res.status(200).json({
     status: "success",
     stats,
   });
 });
-
-

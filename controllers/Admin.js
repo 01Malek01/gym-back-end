@@ -1,66 +1,46 @@
-import Supplement from "../models/Supplement.js";
-import User from "../models/User.js";
 import expressAsyncHandler from "express-async-handler";
-import uploadImage from "../utils/UploadImage.js";
+import AdminService from "../services/AdminService.js";
 // Controllers for managing users
 export const getAllUsers = expressAsyncHandler(async (req, res) => {
-  const users = await User.find().exec();
+  const adminService = new AdminService(null, req, res);
+  const { users } = await adminService.getAllUsers();
   res.status(200).json({ success: true, users });
 });
 
 export const createUser = expressAsyncHandler(async (req, res) => {
-  console.log(req.body);
-  const user = await User.create(req.body);
+  const adminService = new AdminService(req.body, req, res);
+  const { user } = await adminService.createUser();
   res.status(201).json({ success: true, user });
 });
 
 export const updateUser = expressAsyncHandler(async (req, res) => {
-  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  }).exec();
+  const adminService = new AdminService(req.body, req, res);
+  const { user } = await adminService.updateUser();
   if (!user) {
     return res.status(404).json({ success: false, message: "User not found" });
   }
-
   res
     .status(200)
     .json({ success: true, data: `User with ID ${req.params.id} updated` });
 });
 
 export const deleteUser = expressAsyncHandler(async (req, res) => {
-  const { id } = req.params;
-  await User.findByIdAndDelete(id).exec();
+  const adminService = new AdminService(null, req, res);
+  const { id } = await adminService.deleteUser();
   res.status(200).json({ success: true, data: `User with ID ${id} deleted` });
 });
 
 // Controllers for managing supplements
 export const getSupplements = expressAsyncHandler(async (req, res) => {
-  const supplements = await Supplement.find().exec();
+  const adminService = new AdminService(null, req, res);
+  const { supplements } = await adminService.getSupplements();
   res.status(200).send(supplements);
 });
 
 export const createSupplement = expressAsyncHandler(async (req, res) => {
   try {
-    console.log("Received file:", req.file);
-    console.log("Received body:", req.body);
-
-    let imageUrl = "";
-
-    if (req.file) {
-      const result = await uploadImage(req.file.buffer);
-
-      imageUrl = result.secure_url;
-    }
-
-    // Create the supplement entry in MongoDB
-    const supplement = await Supplement.create({
-      name: req.body.name,
-      description: req.body.description,
-      price: req.body.price,
-      stock: req.body.stock,
-      image: imageUrl,
-    });
-
+    const adminService = new AdminService(req.body, req, res);
+    const { supplement } = await adminService.createSupplement();
     res.status(201).json({ success: true, supplement });
   } catch (error) {
     console.error("Error creating supplement:", error);
@@ -69,18 +49,16 @@ export const createSupplement = expressAsyncHandler(async (req, res) => {
 });
 
 export const updateSupplement = expressAsyncHandler(async (req, res) => {
-  const { id } = req.params;
-  const supplement = await Supplement.findByIdAndUpdate(id, req.body, {
-    new: true,
-  }).exec();
+  const adminService = new AdminService(req.body, req, res);
+  const { id } = await adminService.updateSupplement();
   res
     .status(200)
     .json({ success: true, data: `Supplement with ID ${id} updated` });
 });
 
 export const deleteSupplement = expressAsyncHandler(async (req, res) => {
-  const { id } = req.params;
-  await Supplement.findByIdAndDelete(id).exec();
+  const adminService = new AdminService(null, req, res);
+  const { id } = await adminService.deleteSupplement();
   res
     .status(200)
     .json({ success: true, data: `Supplement with ID ${id} deleted` });
@@ -88,65 +66,75 @@ export const deleteSupplement = expressAsyncHandler(async (req, res) => {
 
 // Controllers for managing memberships
 export const getMembership = expressAsyncHandler(async (req, res) => {
-  res.status(200).json({ success: true, data: "Fetch all memberships" });
+  const adminService = new AdminService(null, req, res);
+  const { message } = await adminService.getMembership();
+  res.status(200).json({ success: true, data: message });
 });
 
 export const createMembership = expressAsyncHandler(async (req, res) => {
-  res.status(201).json({ success: true, data: "Membership created" });
+  const adminService = new AdminService(req.body, req, res);
+  const { message } = await adminService.createMembership();
+  res.status(201).json({ success: true, data: message });
 });
 
 export const updateMembership = expressAsyncHandler(async (req, res) => {
-  const { id } = req.params;
-  res
-    .status(200)
-    .json({ success: true, data: `Membership with ID ${id} updated` });
+  const adminService = new AdminService(req.body, req, res);
+  const { id, message } = await adminService.updateMembership();
+  res.status(200).json({ success: true, data: message });
 });
 
 export const deleteMembership = expressAsyncHandler(async (req, res) => {
-  const { id } = req.params;
-  res
-    .status(200)
-    .json({ success: true, data: `Membership with ID ${id} deleted` });
+  const adminService = new AdminService(null, req, res);
+  const { id, message } = await adminService.deleteMembership();
+  res.status(200).json({ success: true, data: message });
 });
 
 // Controllers for managing offers
 export const getOffer = expressAsyncHandler(async (req, res) => {
-  res.status(200).json({ success: true, data: "Fetch all offers" });
+  const adminService = new AdminService(null, req, res);
+  const { message } = await adminService.getOffer();
+  res.status(200).json({ success: true, data: message });
 });
 
 export const createOffer = expressAsyncHandler(async (req, res) => {
-  res.status(201).json({ success: true, data: "Offer created" });
+  const adminService = new AdminService(req.body, req, res);
+  const { message } = await adminService.createOffer();
+  res.status(201).json({ success: true, data: message });
 });
 
 export const updateOffer = expressAsyncHandler(async (req, res) => {
-  const { id } = req.params;
-  res.status(200).json({ success: true, data: `Offer with ID ${id} updated` });
+  const adminService = new AdminService(req.body, req, res);
+  const { id, message } = await adminService.updateOffer();
+  res.status(200).json({ success: true, data: message });
 });
 
 export const deleteOffer = expressAsyncHandler(async (req, res) => {
-  const { id } = req.params;
-  res.status(200).json({ success: true, data: `Offer with ID ${id} deleted` });
+  const adminService = new AdminService(null, req, res);
+  const { id, message } = await adminService.deleteOffer();
+  res.status(200).json({ success: true, data: message });
 });
 
 // Controllers for managing trainers
 export const getTrainer = expressAsyncHandler(async (req, res) => {
-  res.status(200).json({ success: true, data: "Fetch all trainers" });
+  const adminService = new AdminService(null, req, res);
+  const { message } = await adminService.getTrainer();
+  res.status(200).json({ success: true, data: message });
 });
 
 export const createTrainer = expressAsyncHandler(async (req, res) => {
-  res.status(201).json({ success: true, data: "Trainer created" });
+  const adminService = new AdminService(req.body, req, res);
+  const { message } = await adminService.createTrainer();
+  res.status(201).json({ success: true, data: message });
 });
 
 export const updateTrainer = expressAsyncHandler(async (req, res) => {
-  const { id } = req.params;
-  res
-    .status(200)
-    .json({ success: true, data: `Trainer with ID ${id} updated` });
+  const adminService = new AdminService(req.body, req, res);
+  const { id, message } = await adminService.updateTrainer();
+  res.status(200).json({ success: true, data: message });
 });
 
 export const deleteTrainer = expressAsyncHandler(async (req, res) => {
-  const { id } = req.params;
-  res
-    .status(200)
-    .json({ success: true, data: `Trainer with ID ${id} deleted` });
+  const adminService = new AdminService(null, req, res);
+  const { id, message } = await adminService.deleteTrainer();
+  res.status(200).json({ success: true, data: message });
 });
